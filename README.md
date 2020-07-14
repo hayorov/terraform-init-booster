@@ -6,6 +6,10 @@ _A Pre-terraform routine that speedups terraform modules download for bulky blue
 
 - Terraform v0.12.x and older downloads module from git source for every usage (<https://github.com/hashicorp/terraform/issues/11435>). For bulky blueprints with hundreds of similar modules that make the process of `terraform init` slow.
 
+## Installation
+
+    pip install tf-init-booster
+
 ## Quickstart
 
     (blueprint folder)>tf-init-booster
