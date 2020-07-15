@@ -41,6 +41,17 @@ MODULE_NAME_PATTERN = r".+/(.+)\.git\?ref=(.+)"
 TF_MODULES_PATH = ".terraform/modules"
 
 
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text
+
+
+def repo_uri_to_repo_url(repo_uri):
+    repo_url = remove_prefix(repo_uri.split("?")[0], 'git::')
+    return repo_url
+
+
 def repo_uri_to_module_path(repo_uri, name_pattern=MODULE_NAME_PATTERN):
     module_name, tag = re.findall(name_pattern, repo_uri).pop()
     return Path(TF_MODULES_PATH).joinpath(f"{module_name}_{tag}")
@@ -52,7 +63,7 @@ def repo_uri_to_tag(repo_uri, name_pattern=MODULE_NAME_PATTERN):
 
 
 def clone_repo(repo_uri):
-    repo_url = repo_uri.split("?")[0].lstrip("git::")
+    repo_url = repo_uri_to_repo_url(repo_uri)
     module_path = repo_uri_to_module_path(repo_uri)
     try:
         tag = repo_uri_to_tag(repo_uri)
