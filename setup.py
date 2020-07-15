@@ -8,7 +8,7 @@ with open(Path(f"{os.path.dirname(os.path.realpath(__file__))}/README.md"), "r")
 
 setuptools.setup(
     name="tf-init-booster",
-    version="1.0.0",
+    version="1.1.0",
     author="Alex Khaerov",
     description="terraform init booster",
     long_description=long_description,
@@ -20,5 +20,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.6",
-    entry_points={"console_scripts": ["tf-init-booster=tf_init_booster.booster:main"],},
+    entry_points={"console_scripts": ["tf-init-booster=tf_init_booster.booster:main"], },
 )

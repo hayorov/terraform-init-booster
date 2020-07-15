@@ -37,12 +37,13 @@ except Exception:
 
 GIT_BIN = os.environ.get("GIT_PATH", "/usr/bin/git")
 MODULE_REPO_PATTERN = r'module.+"(.+)".*{.*\n.*source.*"(.+)".*\n'
-MODULE_NAME_PATTERN = r"/.+/(.+)\.git\?ref=(.+)"
+MODULE_NAME_PATTERN = r".+/(.+)\.git\?ref=(.+)"
+TF_MODULES_PATH = ".terraform/modules"
 
 
 def repo_uri_to_module_path(repo_uri, name_pattern=MODULE_NAME_PATTERN):
     module_name, tag = re.findall(name_pattern, repo_uri).pop()
-    return Path(".terraform/modules").joinpath(f"{module_name}_{tag}")
+    return Path(TF_MODULES_PATH).joinpath(f"{module_name}_{tag}")
 
 
 def repo_uri_to_tag(repo_uri, name_pattern=MODULE_NAME_PATTERN):
@@ -67,7 +68,7 @@ def clone_repo(repo_uri):
                     "1",
                     "--",
                     repo_url,
-                    f"{module_path}",
+                    module_path,
                 ],
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
@@ -100,14 +101,12 @@ def main():
     for repo in module_repos:
         clone_repo(repo)
 
-    meta_file_path = Path(".terraform/modules/modules.json")
+    meta_file_path = Path(TF_MODULES_PATH).joinpath("modules.json")
     meta_file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(meta_file_path, "w+") as meta_file:
         try:
             meta = json.load(meta_file)
         except json.decoder.JSONDecodeError:
-            meta = None
-        if not isinstance(meta, dict):
             meta = {}
         if "Modules" not in meta:
             meta.update({"Modules": []})
@@ -117,7 +116,7 @@ def main():
 
                 # tf12 format
                 meta["Modules"].append(
-                    {"Key": module_name, "Source": repo_uri, "Dir": f"{module_path}"}
+                    {"Key": module_name, "Source": repo_uri, "Dir": str(module_path)}
                 )
                 # tf11 format
                 meta["Modules"].append(
@@ -125,7 +124,7 @@ def main():
                         "Source": repo_uri,
                         "Key": f"1.{module_name};{repo_uri}",
                         "Version": "",
-                        "Dir": f"{module_path}",
+                        "Dir": str(module_path),
                         "Root": "",
                     }
                 )
