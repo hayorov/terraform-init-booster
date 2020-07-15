@@ -1,5 +1,10 @@
 # terraform-init-booster
 
+![GitHub last commit](https://img.shields.io/github/last-commit/hayorov/terraform-init-booster)
+![PyPI](https://img.shields.io/pypi/v/tf-init-booster)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/tf-init-booster)
+![GitHub issues](https://img.shields.io/github/issues/hayorov/terraform-init-booster)
+
 _A Pre-terraform routine that speedups terraform modules download for bulky blueprints._
 
 ## Problem statement
